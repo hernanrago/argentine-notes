@@ -7,33 +7,46 @@
 <body>
   <h2>Bond S29G5</h2>
 
-  <label for="currentValue">Current value (technical price):</label>
-  <input type="number" id="currentValue" step="0.01">
+  <label for="basePrice">Enter purchase price:</label>
+  <input type="number" id="basePrice" step="0.01">
   <button onclick="calculate()">Calculate</button>
 
   <p id="output"></p>
 
   <script>
     function calculate() {
-      const currentValue = parseFloat(document.getElementById('currentValue').value);
+      const basePrice = parseFloat(document.getElementById('basePrice').value);
       const faceValue = 157.70;
       const today = new Date();
       const maturityDate = new Date('2025-08-29');
-
       const msPerDay = 1000 * 60 * 60 * 24;
       const daysToMaturity = Math.ceil((maturityDate - today) / msPerDay);
 
-      if (isNaN(currentValue) || currentValue <= 0 || daysToMaturity <= 0) {
-        document.getElementById('output').innerText = 'Please enter a valid value. Ensure the current date is before maturity.';
+      if (isNaN(basePrice) || basePrice <= 0 || daysToMaturity <= 0) {
+        document.getElementById('output').innerText =
+          'Please enter a valid base price and ensure today is before the maturity date.';
         return;
       }
 
-      const effectiveRate = faceValue / currentValue - 1;
+      // Fees
+      const commissionFee = basePrice * 0.0049; // 0.49%
+      const marketFee = basePrice * 0.0001;     // 0.01%
+      const totalCost = basePrice + commissionFee + marketFee;
 
+      // Effective rate over the period
+      const effectiveRate = faceValue / totalCost - 1;
+
+      // Monthly Effective Rate (TEM)
       const monthlyEffectiveRate = (Math.pow(1 + effectiveRate, 30 / daysToMaturity) - 1) * 100;
+
+      // Nominal Annual Rate (TNA)
       const nominalAnnualRate = (Math.pow(1 + effectiveRate, 365 / daysToMaturity) - 1) * 100;
 
       document.getElementById('output').innerText =
+        `Base price: $${basePrice.toFixed(2)}\n` +
+        `Commission fee (0.49%): $${commissionFee.toFixed(2)}\n` +
+        `Market fee (0.01%): $${marketFee.toFixed(2)}\n` +
+        `Total paid (technical value): $${totalCost.toFixed(2)}\n\n` +
         `Days to maturity: ${daysToMaturity}\n` +
         `TEM (Monthly Effective Rate): ${monthlyEffectiveRate.toFixed(2)} %\n` +
         `TNA (Nominal Annual Rate): ${nominalAnnualRate.toFixed(2)} %`;
