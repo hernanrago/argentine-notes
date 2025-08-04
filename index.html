@@ -1,1 +1,43 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>S29G5 - TEM and TNA Calculator</title>
+</head>
+<body>
+  <h2>Bond S29G5</h2>
+
+  <label for="currentValue">Current value (technical price):</label>
+  <input type="number" id="currentValue" step="0.01">
+  <button onclick="calculate()">Calculate</button>
+
+  <p id="output"></p>
+
+  <script>
+    function calculate() {
+      const currentValue = parseFloat(document.getElementById('currentValue').value);
+      const faceValue = 157.70;
+      const today = new Date();
+      const maturityDate = new Date('2025-08-29');
+
+      const msPerDay = 1000 * 60 * 60 * 24;
+      const daysToMaturity = Math.ceil((maturityDate - today) / msPerDay);
+
+      if (isNaN(currentValue) || currentValue <= 0 || daysToMaturity <= 0) {
+        document.getElementById('output').innerText = 'Please enter a valid value. Ensure the current date is before maturity.';
+        return;
+      }
+
+      const effectiveRate = faceValue / currentValue - 1;
+
+      const monthlyEffectiveRate = (Math.pow(1 + effectiveRate, 30 / daysToMaturity) - 1) * 100;
+      const nominalAnnualRate = (Math.pow(1 + effectiveRate, 365 / daysToMaturity) - 1) * 100;
+
+      document.getElementById('output').innerText =
+        `Days to maturity: ${daysToMaturity}\n` +
+        `TEM (Monthly Effective Rate): ${monthlyEffectiveRate.toFixed(2)} %\n` +
+        `TNA (Nominal Annual Rate): ${nominalAnnualRate.toFixed(2)} %`;
+    }
+  </script>
+</body>
+</html>
