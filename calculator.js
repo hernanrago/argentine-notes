@@ -48,6 +48,10 @@ const bonds = [
 
 function initializeBondCards() {
   const bondsGrid = document.getElementById('bondsGrid');
+  if (!bondsGrid) {
+    console.error('bondsGrid element not found');
+    return;
+  }
   
   bonds.forEach(bond => {
     const bondCard = document.createElement('div');
@@ -84,7 +88,13 @@ function initializeBondCards() {
 }
 
 function calculateFromPrice() {
-  const basePrice = parseFloat(document.getElementById('basePrice').value);
+  const basePriceElement = document.getElementById('basePrice');
+  if (!basePriceElement) {
+    console.error('basePrice element not found');
+    return;
+  }
+  
+  const basePrice = parseFloat(basePriceElement.value);
   if (isNaN(basePrice) || basePrice <= 0) {
     alert('Please enter a valid purchase price.');
     return;
@@ -105,10 +115,15 @@ function calculateFromPrice() {
 }
 
 function updateBondCard(bondName, basePrice, totalCost, tem, tna) {
-  document.getElementById(`price-${bondName}`).textContent = `$${basePrice.toFixed(2)}`;
-  document.getElementById(`total-${bondName}`).textContent = `$${totalCost.toFixed(2)}`;
-  document.getElementById(`tem-${bondName}`).textContent = `${tem.toFixed(2)}%`;
-  document.getElementById(`tna-${bondName}`).textContent = `${tna.toFixed(2)}%`;
+  const priceElement = document.getElementById(`price-${bondName}`);
+  const totalElement = document.getElementById(`total-${bondName}`);
+  const temElement = document.getElementById(`tem-${bondName}`);
+  const tnaElement = document.getElementById(`tna-${bondName}`);
+  
+  if (priceElement) priceElement.textContent = `$${basePrice.toFixed(2)}`;
+  if (totalElement) totalElement.textContent = `$${totalCost.toFixed(2)}`;
+  if (temElement) temElement.textContent = `${tem.toFixed(2)}%`;
+  if (tnaElement) tnaElement.textContent = `${tna.toFixed(2)}%`;
 }
 
 document.addEventListener('DOMContentLoaded', initializeBondCards);
