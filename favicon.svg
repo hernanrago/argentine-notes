@@ -1,0 +1,49 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="favicon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect width="32" height="32" rx="6" ry="6" fill="url(#favicon-gradient)"/>
+  
+  <!-- Simple calculator icon -->
+  <g transform="translate(4, 4)">
+    <!-- Calculator body -->
+    <rect x="0" y="0" width="24" height="24" rx="3" ry="3" fill="white" opacity="0.95"/>
+    
+    <!-- Display area -->
+    <rect x="2" y="2" width="20" height="6" rx="1" ry="1" fill="#2c3e50"/>
+    
+    <!-- Small text in display -->
+    <rect x="16" y="3.5" width="4" height="1" fill="white" opacity="0.8"/>
+    <rect x="16" y="5" width="3" height="1" fill="white" opacity="0.8"/>
+    
+    <!-- Button grid (simplified) -->
+    <g fill="#667eea">
+      <!-- Row 1 -->
+      <rect x="2" y="10" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="7" y="10" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="12" y="10" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="17" y="10" width="4" height="3" rx="0.5" ry="0.5"/>
+      
+      <!-- Row 2 -->
+      <rect x="2" y="14.5" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="7" y="14.5" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="12" y="14.5" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="17" y="14.5" width="4" height="3" rx="0.5" ry="0.5"/>
+      
+      <!-- Row 3 -->
+      <rect x="2" y="19" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="7" y="19" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="12" y="19" width="4" height="3" rx="0.5" ry="0.5"/>
+      <rect x="17" y="19" width="4" height="3" rx="0.5" ry="0.5"/>
+    </g>
+    
+    <!-- Small accent dots -->
+    <circle cx="4" cy="4.5" r="0.5" fill="white" opacity="0.6"/>
+    <circle cx="6" cy="4.5" r="0.5" fill="white" opacity="0.6"/>
+  </g>
+</svg>

@@ -5,6 +5,9 @@ const urlsToCache = [
   '/styles.css',
   '/calculator.js',
   '/manifest.json',
+  '/favicon.svg',
+  '/favicon-16x16.png',
+  '/favicon-32x32.png',
   '/icon-192x192.png',
   '/icon-512x512.png'
 ];
