@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generate PWA Icons</title>
+    <style>
+        .icon-generator {
+            display: none;
+        }
+        .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: bold;
+            border-radius: 20%;
+        }
+        .icon-192 {
+            width: 192px;
+            height: 192px;
+            font-size: 64px;
+        }
+        .icon-512 {
+            width: 512px;
+            height: 512px;
+            font-size: 180px;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon-generator">
+        <canvas id="canvas-192" width="192" height="192"></canvas>
+        <canvas id="canvas-512" width="512" height="512"></canvas>
+    </div>
+    
+    <div>
+        <h3>192x192 Icon:</h3>
+        <div class="icon icon-192">📊</div>
+        <h3>512x512 Icon:</h3>
+        <div class="icon icon-512">📊</div>
+    </div>
+
+    <script>
+        function createIcon(size) {
+            const canvas = document.getElementById(`canvas-${size}`);
+            const ctx = canvas.getContext('2d');
+            
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Fill background with gradient
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Add rounded corners
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            const radius = size * 0.2;
+            ctx.roundRect(0, 0, size, size, radius);
+            ctx.fill();
+            
+            // Reset composite operation
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // Add icon text
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.35}px -apple-system, BlinkMacSystemFont, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('📊', size / 2, size / 2);
+            
+            // Convert to blob and create download link
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `icon-${size}x${size}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+        
+        // Polyfill for roundRect if not supported
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.arcTo(x + width, y, x + width, y + height, radius);
+                this.arcTo(x + width, y + height, x, y + height, radius);
+                this.arcTo(x, y + height, x, y, radius);
+                this.arcTo(x, y, x + width, y, radius);
+                this.closePath();
+            };
+        }
+        
+        // Generate icons when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                createIcon(192);
+                setTimeout(() => createIcon(512), 100);
+            }, 100);
+        });
+    </script>
+</body>
+</html>
