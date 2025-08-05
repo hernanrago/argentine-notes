@@ -19,6 +19,24 @@
     <main>
       <div class="calculator-form">
         <div class="input-group">
+          <label for="bondSelect">Select Bond Instrument</label>
+          <select id="bondSelect">
+            <option value="">Choose a bond...</option>
+          </select>
+        </div>
+
+        <div class="bond-info" id="bondInfo" style="display: none;">
+          <div class="info-item">
+            <span class="label">Days to Maturity:</span>
+            <span id="daysToMaturity">-</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Fair Value:</span>
+            <span id="fairValue">-</span>
+          </div>
+        </div>
+
+        <div class="input-group">
           <label for="basePrice">Purchase Price ($)</label>
           <input type="number" id="basePrice" step="0.01" placeholder="Enter purchase price">
         </div>
@@ -33,7 +51,7 @@
           <input type="number" id="tna" step="0.01" placeholder="Nominal Annual Rate">
         </div>
 
-        <button class="calculate-btn" onclick="calculateFromPrice()">Calculate from Price</button>
+        <button class="calculate-btn" onclick="calculateFromPrice()" disabled id="calculateBtn">Calculate from Price</button>
       </div>
 
       <div class="output-section">
