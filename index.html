@@ -1,24 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>S29G5 - TEM and TNA Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Notes Calculator - Calculate monthly effective rate and nominal annual rate for financial notes">
+  <meta name="keywords" content="notes calculator, TEM, TNA, financial calculator">
+  <meta name="author" content="Notes Calculator">
+  <title>Notes Calculator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h2>Bond S29G5</h2>
+  <div class="container">
+    <header>
+      <h1>Notes Calculator</h1>
+      <p>Calculate TEM (Monthly Effective Rate) and TNA (Nominal Annual Rate)</p>
+    </header>
 
-  <label for="basePrice">Enter purchase price:</label>
-  <input type="number" id="basePrice" step="0.01">
+    <main>
+      <div class="calculator-form">
+        <div class="input-group">
+          <label for="basePrice">Purchase Price ($)</label>
+          <input type="number" id="basePrice" step="0.01" placeholder="Enter purchase price">
+        </div>
 
-  <label for="tem">TEM (%):</label>
-  <input type="number" id="tem" step="0.01">
+        <div class="input-group">
+          <label for="tem">TEM (%)</label>
+          <input type="number" id="tem" step="0.01" placeholder="Monthly Effective Rate">
+        </div>
 
-  <label for="tna">TNA (%):</label>
-  <input type="number" id="tna" step="0.01">
+        <div class="input-group">
+          <label for="tna">TNA (%)</label>
+          <input type="number" id="tna" step="0.01" placeholder="Nominal Annual Rate">
+        </div>
 
-  <button onclick="calculateFromPrice()">Calculate from Price</button>
+        <button class="calculate-btn" onclick="calculateFromPrice()">Calculate from Price</button>
+      </div>
 
-  <p id="output"></p>
+      <div class="output-section">
+        <pre id="output"></pre>
+      </div>
+    </main>
+  </div>
 
   <script src="calculator.js"></script>
 </body>
