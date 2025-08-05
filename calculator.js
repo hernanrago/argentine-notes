@@ -46,128 +46,69 @@ const bonds = [
   }
 ];
 
-let selectedBond = null;
-
-function initializeBondSelector() {
-  const bondSelect = document.getElementById('bondSelect');
+function initializeBondCards() {
+  const bondsGrid = document.getElementById('bondsGrid');
   
   bonds.forEach(bond => {
-    const option = document.createElement('option');
-    option.value = bond.bond_name;
-    option.textContent = `${bond.bond_name} (${bond.days_to_finish} days)`;
-    bondSelect.appendChild(option);
+    const bondCard = document.createElement('div');
+    bondCard.className = 'bond-card';
+    bondCard.innerHTML = `
+      <div class="bond-header">
+        <h3>${bond.bond_name}</h3>
+        <div class="bond-details">
+          <span class="detail-item">Days: ${bond.days_to_finish}</span>
+          <span class="detail-item">Fair Value: $${bond.fair_value.toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="bond-results" id="results-${bond.bond_name}">
+        <div class="result-item">
+          <span class="label">Purchase Price:</span>
+          <span class="value" id="price-${bond.bond_name}">-</span>
+        </div>
+        <div class="result-item">
+          <span class="label">Total Cost:</span>
+          <span class="value" id="total-${bond.bond_name}">-</span>
+        </div>
+        <div class="result-item">
+          <span class="label">TEM:</span>
+          <span class="value" id="tem-${bond.bond_name}">-</span>
+        </div>
+        <div class="result-item">
+          <span class="label">TNA:</span>
+          <span class="value" id="tna-${bond.bond_name}">-</span>
+        </div>
+      </div>
+    `;
+    bondsGrid.appendChild(bondCard);
   });
-
-  bondSelect.addEventListener('change', function() {
-    const bondName = this.value;
-    if (bondName) {
-      selectedBond = bonds.find(bond => bond.bond_name === bondName);
-      updateBondInfo();
-      document.getElementById('calculateBtn').disabled = false;
-    } else {
-      selectedBond = null;
-      document.getElementById('bondInfo').style.display = 'none';
-      document.getElementById('calculateBtn').disabled = true;
-      clearResults();
-    }
-  });
-}
-
-function updateBondInfo() {
-  if (selectedBond) {
-    document.getElementById('daysToMaturity').textContent = selectedBond.days_to_finish;
-    document.getElementById('fairValue').textContent = `$${selectedBond.fair_value.toFixed(2)}`;
-    document.getElementById('bondInfo').style.display = 'block';
-  }
-}
-
-function clearResults() {
-  document.getElementById('basePrice').value = '';
-  document.getElementById('tem').value = '';
-  document.getElementById('tna').value = '';
-  document.getElementById('output').textContent = '';
 }
 
 function calculateFromPrice() {
-  if (!selectedBond) {
-    document.getElementById('output').innerText = 'Please select a bond first.';
-    return;
-  }
-
   const basePrice = parseFloat(document.getElementById('basePrice').value);
   if (isNaN(basePrice) || basePrice <= 0) {
-    document.getElementById('output').innerText = 'Invalid base price.';
+    alert('Please enter a valid purchase price.');
     return;
   }
 
-  const commissionFee = basePrice * 0.0049;
-  const marketFee = basePrice * 0.0001;
-  const totalCost = basePrice + commissionFee + marketFee;
+  bonds.forEach(bond => {
+    const commissionFee = basePrice * 0.0049;
+    const marketFee = basePrice * 0.0001;
+    const totalCost = basePrice + commissionFee + marketFee;
 
-  const effectiveRate = selectedBond.fair_value / totalCost - 1;
+    const effectiveRate = bond.fair_value / totalCost - 1;
 
-  const tem = (Math.pow(1 + effectiveRate, 30 / selectedBond.days_to_finish) - 1) * 100;
-  const tna = (Math.pow(1 + effectiveRate, 365 / selectedBond.days_to_finish) - 1) * 100;
+    const tem = (Math.pow(1 + effectiveRate, 30 / bond.days_to_finish) - 1) * 100;
+    const tna = (Math.pow(1 + effectiveRate, 365 / bond.days_to_finish) - 1) * 100;
 
-  document.getElementById('tem').value = tem.toFixed(2);
-  document.getElementById('tna').value = tna.toFixed(2);
-
-  updateOutput(basePrice, commissionFee, marketFee, totalCost, tem, tna);
+    updateBondCard(bond.bond_name, basePrice, totalCost, tem, tna);
+  });
 }
 
-function updateOutput(basePrice, commissionFee, marketFee, totalCost, tem, tna) {
-  document.getElementById('output').innerText =
-    `Bond: ${selectedBond.bond_name}\n` +
-    `Base price: $${basePrice.toFixed(2)}\n` +
-    `Commission fee (0.49%): $${commissionFee.toFixed(2)}\n` +
-    `Market fee (0.01%): $${marketFee.toFixed(2)}\n` +
-    `Total paid (technical value): $${totalCost.toFixed(2)}\n\n` +
-    `Fair value: $${selectedBond.fair_value.toFixed(2)}\n` +
-    `Days to maturity: ${selectedBond.days_to_finish}\n` +
-    `TEM (Monthly Effective Rate): ${tem.toFixed(2)}%\n` +
-    `TNA (Nominal Annual Rate): ${tna.toFixed(2)}%`;
+function updateBondCard(bondName, basePrice, totalCost, tem, tna) {
+  document.getElementById(`price-${bondName}`).textContent = `$${basePrice.toFixed(2)}`;
+  document.getElementById(`total-${bondName}`).textContent = `$${totalCost.toFixed(2)}`;
+  document.getElementById(`tem-${bondName}`).textContent = `${tem.toFixed(2)}%`;
+  document.getElementById(`tna-${bondName}`).textContent = `${tna.toFixed(2)}%`;
 }
 
-document.getElementById('tem').addEventListener('input', () => {
-  if (!selectedBond) return;
-  
-  const tem = parseFloat(document.getElementById('tem').value) / 100;
-  if (isNaN(tem) || tem <= 0) return;
-
-  const effectiveRate = Math.pow(1 + tem, selectedBond.days_to_finish / 30) - 1;
-  const totalCost = selectedBond.fair_value / (1 + effectiveRate);
-  const basePrice = totalCost / 1.005;
-
-  const commissionFee = basePrice * 0.0049;
-  const marketFee = basePrice * 0.0001;
-
-  const tna = (Math.pow(1 + effectiveRate, 365 / selectedBond.days_to_finish) - 1) * 100;
-
-  document.getElementById('basePrice').value = basePrice.toFixed(2);
-  document.getElementById('tna').value = tna.toFixed(2);
-
-  updateOutput(basePrice, commissionFee, marketFee, totalCost, tem * 100, tna);
-});
-
-document.getElementById('tna').addEventListener('input', () => {
-  if (!selectedBond) return;
-  
-  const tna = parseFloat(document.getElementById('tna').value) / 100;
-  if (isNaN(tna) || tna <= 0) return;
-
-  const effectiveRate = Math.pow(1 + tna, selectedBond.days_to_finish / 365) - 1;
-  const totalCost = selectedBond.fair_value / (1 + effectiveRate);
-  const basePrice = totalCost / 1.005;
-
-  const commissionFee = basePrice * 0.0049;
-  const marketFee = basePrice * 0.0001;
-
-  const tem = (Math.pow(1 + effectiveRate, 30 / selectedBond.days_to_finish) - 1) * 100;
-
-  document.getElementById('basePrice').value = basePrice.toFixed(2);
-  document.getElementById('tem').value = tem.toFixed(2);
-
-  updateOutput(basePrice, commissionFee, marketFee, totalCost, tem, tna * 100);
-});
-
-document.addEventListener('DOMContentLoaded', initializeBondSelector);
+document.addEventListener('DOMContentLoaded', initializeBondCards);
