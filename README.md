@@ -1,4 +1,4 @@
-# S29G5 Bond - TEM and TNA Calculator
+# Argentine Notes - TEM and TNA Calculator
 
 This is a simple client-side calculator for the Argentine treasury bond **S29G5**.  
 It calculates the **Monthly Effective Rate (TEM)** and **Nominal Annual Rate (TNA)** based on:
